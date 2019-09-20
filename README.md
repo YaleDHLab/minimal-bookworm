@@ -2,6 +2,8 @@
 
 A minimal project that allows one to visualize term distributions over time
 
+![Preview](./assets/img/preview.gif)
+
 # Preparing Your Data
 
 To visualize a text collection, one only needs a directory of text files and a JSON metadata file that identifies the publication date of those text files. The text files should be simple plaintext files, while the metadata file should be a list of objects, where each object contains a `filename` and `year` attribute for a single record. Your metadata record may include other fields beside `filename` and `year`. Here's an example metadata record:
