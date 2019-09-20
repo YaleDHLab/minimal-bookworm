@@ -2,7 +2,7 @@
 
 A minimal project that allows one to visualize term distributions over time
 
-![Preview](./assets/img/preview.gif)
+![Preview](./preview.gif)
 
 # Preparing Your Data
 
