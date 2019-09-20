@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8'>
+    <title>title</title>
+    <script src='https://code.highcharts.com/highcharts.js'></script>
+    <script src='https://code.highcharts.com/modules/series-label.js'></script>
+    <script src='https://code.highcharts.com/modules/exporting.js'></script>
+    <script src='https://code.highcharts.com/modules/export-data.js'></script>
+    <style>
+      #search-container {
+        text-align: center;
+        margin: 50px;
+      }
+      #search-container input {
+        font-size: 1em;
+        padding: 10px;
+        background: #efefef;
+        border: none;
+        display: inline-block;
+        width: 280px;
+      }
+      #search-container button {
+        background: rgb(124, 181, 236);
+        padding: 10px 20px;
+        color: #fff;
+        border: none;
+        display: inline-block;
+        font-size: 1em;
+      }
+      #chart-container {
+        min-width: 310px;
+        max-width: 800px;
+        height: 400px;
+        margin: 0 auto
+      }
+    </style>
+  </head>
+  <body>
+    <div id='search-container'>
+      <input id='q' type='text' >
+      <button>SUBMIT</button>
+    </div>
+    <div id='chart-container'></div>
+    <script>
+      // config
+      var baseroute = window.location.protocol + '//' + window.location.host;
+
+      function getConfig(data) {
+        return {
+          title: {
+            text: 'Your Chart Title Goes Here',
+          },
+          subtitle: {
+            text: 'Your Subtitle Goes Here',
+          },
+          yAxis: {
+            title: {
+              text: 'Frequency',
+            }
+          },
+          legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+          },
+          plotOptions: {
+            series: {
+              label: {
+                connectorAllowed: false,
+              },
+              pointStart: data.min_year,
+            }
+          },
+          series: data.series,
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 500,
+              },
+              chartOptions: {
+                legend: {
+                  layout: 'horizontal',
+                  align: 'center',
+                  verticalAlign: 'bottom',
+                }
+              }
+            }]
+          }
+        }
+      }
+
+      function get(url, onSuccess, onErr, onProgress) {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              if (onSuccess) onSuccess(JSON.parse(xhr.responseText))
+            } else {
+              if (onErr) onErr(xhr)
+            }
+          };
+        };
+        xhr.onprogress = function() {
+          if (onProgress) onProgress(e);
+        };
+        xhr.open('GET', url, true);
+        xhr.send();
+      }
+
+      function getQuery() {
+        var q = input.value.split(',');
+        q.forEach(function(i) { i = i.trim() })
+        return 'q=' + q.join('&q=');
+      }
+
+      function render() {
+        var url = baseroute + '/api/query';
+        var q = getQuery();
+        if (q) url += '?' + q;
+        get(url, function(data) {
+          Highcharts.chart('chart-container', getConfig(data))
+        })
+      }
+
+      // add event listeners to input elements
+      var button = document.querySelector('button');
+      var input = document.querySelector('#q');
+      button.addEventListener('click', render)
+      input.addEventListener('keydown', function(e) {
+        if (e.keyCode == 13) render()
+      })
+
+      get(baseroute + '/api/config', function(config) {
+        input.placeholder = config.default_query.join(', ')
+        render();
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+config.json
+*.db
+*.pem
+*.swp
+*.DS_Store
+*.pyc
+
