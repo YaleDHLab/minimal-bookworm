@@ -1,6 +1,6 @@
 # Minimal Bookworm
 
-A minimal project that allows one to visualize term distributions over time simply
+A minimal project that allows one to visualize term distributions over time
 
 # Preparing Your Data
 
